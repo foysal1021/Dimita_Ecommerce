@@ -22,26 +22,19 @@ const Login = () => {
   const SingInWithGoogle = () => {
     GoogleSingIn()
       .then((data) => {
-        if (data) {
-          const googleUserInfo = {
-            name: user?.displayName,
-            email: user?.email,
-          };
-
-          fetch("http://localhost:5000/user_collection", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(googleUserInfo),
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              if (data.acknowledged) {
-                navigate("/");
-              }
-            });
-        }
+        const googleUser = {
+          name: data.user.displayName,
+          email: data.user.email,
+        };
+        fetch("http://localhost:5000/user_collection", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(googleUser),
+        })
+          .then((res) => res.json())
+          .then((data) => console.log(data));
       })
       .catch((err) => console.log(err));
   };

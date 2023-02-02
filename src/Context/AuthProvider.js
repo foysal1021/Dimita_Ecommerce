@@ -15,6 +15,8 @@ const auth = getAuth(app);
 const GoogleProvider = new GoogleAuthProvider();
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [orderInfo, setorderInfo] = useState();
+
   // user register start
   const userRegister = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -46,7 +48,15 @@ const AuthProvider = ({ children }) => {
     return () => unsubscribe;
   }, []);
 
-  const authInfo = { userRegister, userSingIn, GoogleSingIn, user, logout };
+  const authInfo = {
+    userRegister,
+    userSingIn,
+    GoogleSingIn,
+    user,
+    logout,
+    setorderInfo,
+    orderInfo,
+  };
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
   );

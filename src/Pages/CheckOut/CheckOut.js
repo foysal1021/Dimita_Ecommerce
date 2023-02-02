@@ -1,8 +1,63 @@
-import React from "react";
-import { MdEmail } from "react-icons/md";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../Context/AuthProvider";
 
 const CheckOut = () => {
+  const { orderInfo } = useContext(AuthContext);
+  const [name, setName] = useState("");
+  const [division, setDivision] = useState("");
+  const [districk, setDistrick] = useState("");
+  const [thana, setThana] = useState("");
+  const [zipcode, SetzipCode] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+
+  const BillinInfo = [
+    {
+      name,
+      division,
+      districk,
+      thana,
+      zipcode,
+      phone,
+      email,
+    },
+  ];
+  const order = { orderInfo, BillinInfo };
+
+  const Name = (e) => {
+    setName(e.target.value);
+  };
+  const Division = (e) => {
+    setDivision(e.target.value);
+  };
+  const Districk = (e) => {
+    setDistrick(e.target.value);
+  };
+  const Thana = (e) => {
+    setThana(e.target.value);
+  };
+  const zipCode = (e) => {
+    SetzipCode(e.target.value);
+  };
+  const Phone = (e) => {
+    setPhone(e.target.value);
+  };
+  const Email = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const placeOrder = () => {
+    fetch("http://localhost:5000/place_order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(order),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  };
   return (
     <section className=" max-w-[1300px] mx-2 lg:mx-auto">
       <div className=" mt-20">
@@ -13,15 +68,19 @@ const CheckOut = () => {
               <div className="form-control">
                 <label className="mb-1">Full Name</label>
                 <input
+                  onChange={Name}
                   type="text"
                   className=" w-full border border-[#d1d0d0] outline-none h-12 px-2"
                 />
               </div>
 
               <div className="form-control">
-                <label className="mb-1">Country / Region</label>
+                <label className="mb-1">Division</label>
 
-                <select className=" w-full  border border-[#d1d0d0] h-12 px-2">
+                <select
+                  onChange={Division}
+                  className=" w-full  border border-[#d1d0d0] h-12 px-2"
+                >
                   <option disabled selected>
                     Who shot first?
                   </option>
@@ -31,36 +90,34 @@ const CheckOut = () => {
               </div>
 
               <div className="form-control">
-                <label className="mb-1">Street address</label>
+                <label className="mb-1">Districk</label>
                 <input
                   type="text"
+                  onChange={Districk}
                   className=" w-full border border-[#d1d0d0] outline-none h-12 px-2"
                 />
               </div>
               <div className="form-control">
-                <label className="mb-1">Town / City</label>
+                <label className="mb-1">Thana</label>
                 <input
                   type="text"
+                  onChange={Thana}
                   className=" w-full border border-[#d1d0d0] outline-none h-12 px-2"
                 />
               </div>
               <div className="form-control">
-                <label className="mb-1">State / County</label>
+                <label className="mb-1">Zip Code</label>
                 <input
+                  onChange={zipCode}
                   type="text"
                   className=" w-full border border-[#d1d0d0] outline-none h-12 px-2"
                 />
               </div>
-              <div className="form-control">
-                <label className="mb-1">Postcode / Zip</label>
-                <input
-                  type="number"
-                  className=" w-full border border-[#d1d0d0] outline-none h-12 px-2"
-                />
-              </div>
+
               <div className="form-control">
                 <label className="mb-1">Phone</label>
                 <input
+                  onChange={Phone}
                   type="email"
                   className=" w-full border border-[#d1d0d0] outline-none h-12 px-2"
                 />
@@ -68,6 +125,7 @@ const CheckOut = () => {
               <div className="form-control">
                 <label className="mb-1">Email</label>
                 <input
+                  onChange={Email}
                   type="email"
                   className=" w-full border border-[#d1d0d0] outline-none h-12 px-2"
                 />
@@ -82,8 +140,12 @@ const CheckOut = () => {
               <hr></hr>
               <div className=" grid grid-cols-1  gap-3 text-[#000000c4] mt-3 mb-5">
                 <div className=" flex">
-                  <p className=" w-2/3">Circled Ultimate 3D Speaker × 4</p>
-                  <p className=" w-1/3 text-right">$44.00</p>
+                  <p className=" w-2/3">
+                    {orderInfo.productName} × {orderInfo.Quantity}
+                  </p>
+                  <p className=" w-1/3 text-right">
+                    ${orderInfo.OrginalPrice * orderInfo.Quantity}.00
+                  </p>
                 </div>
                 <div className=" flex">
                   <p className=" w-2/3">Delivery Charge</p>
@@ -97,15 +159,15 @@ const CheckOut = () => {
                 <hr></hr>
                 <div className=" flex text-2xl font-bold">
                   <p className=" w-2/3">Total</p>
-                  <p className=" w-1/3 text-right">$10.00</p>
+                  <p className=" w-1/3 text-right">${orderInfo.totalPrice}</p>
                 </div>
               </div>
             </div>
             <Link
+              onClick={placeOrder}
               to="/order_complite"
               className=" btn  w-full text-2xl capitalize"
             >
-              {" "}
               Place Order
             </Link>
           </div>

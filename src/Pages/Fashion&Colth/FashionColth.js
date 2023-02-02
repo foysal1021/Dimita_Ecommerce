@@ -9,7 +9,7 @@ const FashionColth = () => {
       .then((res) => res.json())
       .then((data) => setFashions(data));
   }, []);
-  console.log(fashions);
+
   return (
     <section>
       <div className=" max-w-[1300px] mx-2 lg:mx-auto mt-20">

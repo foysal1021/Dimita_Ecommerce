@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { AiFillStar } from "react-icons/ai";
 import { FaHeart, FaMinus, FaPlus, FaStar } from "react-icons/fa";
 import { Link, useLoaderData } from "react-router-dom";
+import { AuthContext } from "../../Context/AuthProvider";
 
 const ViewDetails = () => {
   const Details = useLoaderData();
+  const { user, setorderInfo, orderInfo } = useContext(AuthContext);
+  console.log(orderInfo);
   const [Quantity, setQuantity] = useState(1);
   const DeliveryCharge = 20;
   const serviceCharge = 10;
   const totalPrice = Quantity * Details.price + DeliveryCharge + serviceCharge;
+
   const decrement = () => {
     if (Quantity < 2) {
       setQuantity(1);
@@ -31,7 +35,20 @@ const ViewDetails = () => {
       catagory: Details.category,
       Quantity,
     };
-    console.log(addWishList);
+  };
+  const buyNow = () => {
+    const order = {
+      email: user?.email,
+      orderId: Details._id,
+      img: Details.img,
+      productName: Details.productName,
+      OrginalPrice: Details.price,
+      totalPrice: totalPrice,
+      ratting: Details.ratting,
+      catagory: Details.category,
+      Quantity,
+    };
+    setorderInfo(order);
   };
   return (
     <section className=" max-w-[1300px] mx-auto mt-20">
@@ -86,7 +103,11 @@ const ViewDetails = () => {
               {" "}
               Add To Cart
             </button>
-            <Link to="/check_out" className=" btn bg-[#3086b0] border-none">
+            <Link
+              onClick={buyNow}
+              to="/check_out"
+              className=" btn bg-[#3086b0] border-none"
+            >
               {" "}
               Buy Now
             </Link>
