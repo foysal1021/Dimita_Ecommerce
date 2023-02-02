@@ -1,17 +1,70 @@
-import React from "react";
+import React, { useContext } from "react";
 import { MdEmail, MdDriveFileRenameOutline } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../Context/AuthProvider";
 
 const Register = () => {
+  const { userRegister, user, GoogleSingIn } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
   const register = (e) => {
     e.preventDefault();
     const form = e.target;
     const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(name, email, password);
+    const userInfo = {
+      name,
+      email,
+    };
+    userRegister(email, password)
+      .then((data) => {
+        if (data.user) {
+          form.reset();
+          fetch("http://localhost:5000/user_collection", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userInfo),
+          })
+            .then((res) => res.json())
+            .then((data) => console.log(data));
+          navigate("/");
+        }
+      })
+      .catch((err) => console.log(err));
   };
+
+  const SingInWithGoogle = () => {
+    GoogleSingIn()
+      .then((data) => {
+        if (data) {
+          const googleUserInfo = {
+            name: user?.displayName,
+            email: user?.email,
+          };
+
+          fetch("http://localhost:5000/user_collection", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(googleUserInfo),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.acknowledged) {
+                navigate("/");
+              }
+            });
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+  // google data post end
   return (
     <section>
       <div className=" my-20 max-w-[1300px] mx-2 lg:mx-auto">
@@ -54,6 +107,7 @@ const Register = () => {
                 className="input w-full loginInput text-white"
               />
             </div>
+
             <input
               className="input cursor-pointer w-full loginInput text-white"
               value="Register"
@@ -71,7 +125,10 @@ const Register = () => {
           </span>
 
           <div className="divider">OR</div>
-          <button className=" btn w-full bg-[#13a4ec] border-none">
+          <button
+            onClick={SingInWithGoogle}
+            className=" btn w-full bg-[#13a4ec] border-none"
+          >
             Countinu With Google
           </button>
         </div>

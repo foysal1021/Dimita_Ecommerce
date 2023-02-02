@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { BsFillCartDashFill } from "react-icons/bs";
 import {
   FaShoppingBag,
   FaTimes,
-  FaBookOpen,
   FaBlogger,
   FaBars,
-  FaUser,
   FaHome,
   FaHeart,
 } from "react-icons/fa";
 import { MdContactMail, MdBookmarkBorder, MdDashboard } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../Context/AuthProvider";
 
 const Manubar = () => {
+  const { user } = useContext(AuthContext);
   const [show, setShowManue] = useState(false);
   const manuItem = (
     <>
@@ -81,21 +81,22 @@ const Manubar = () => {
             {manuItem}
           </ul>
         </div>
-
-        <div className=" flex gap-10">
-          <Link to="/wishlist" className="relative">
-            <FaHeart className=" text-3xl"></FaHeart>
-            <p className=" absolute top-[-10px] bg-[#1080b9] text-white  right-0 w-5 h-5 rounded-full flex justify-center items-center">
-              0
-            </p>
-          </Link>
-          <Link to="/shopping_cart" className="relative">
-            <BsFillCartDashFill className=" text-3xl"></BsFillCartDashFill>
-            <p className=" absolute top-[-10px] bg-[#1080b9] text-white right-0 w-5 h-5 rounded-full flex justify-center items-center">
-              0
-            </p>
-          </Link>
-        </div>
+        {user?.uid && (
+          <div className=" flex gap-10">
+            <Link to="/wishlist" className="relative">
+              <FaHeart className=" text-3xl"></FaHeart>
+              <p className=" absolute top-[-10px] bg-[#1080b9] text-white  right-0 w-5 h-5 rounded-full flex justify-center items-center">
+                0
+              </p>
+            </Link>
+            <Link to="/shopping_cart" className="relative">
+              <BsFillCartDashFill className=" text-3xl"></BsFillCartDashFill>
+              <p className=" absolute top-[-10px] bg-[#1080b9] text-white right-0 w-5 h-5 rounded-full flex justify-center items-center">
+                0
+              </p>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
