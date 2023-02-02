@@ -1,0 +1,8 @@
+.loginInput {
+  background: linear-gradient(45deg, #13a4ec, #76bbde);
+  outline: none;
+  border: none;
+}
+.loginInput::placeholder {
+  color: white;
+}
